@@ -1,4 +1,12 @@
-# smart_doorbell
+# Smart Doorbell
+Timbre inteligente utilizando una Orange Pi One. Cada vez que alguien llama a la puerta reproduce 
+el sonido que se especifique en la configuración y, en caso de tener un Broker MQTT configurado, 
+publica en un topic la fecha y hora a la que se ha producido la llamada.
+
+El switch del timbre debe de ser conectado a utilizando una resistencia de pull-up (en mi caso utilicé una resistencia de 
+10k) como se muestra en el siguiente esquema:
+
+![Esquema electrico](https://github.com/infdsc02/OrangePiOneSmartDoorbell/blob/master/electronic_eschema/Esquema_Fritzing_bb.png?raw=true)
 
 ## Configuración
 Plantilla del fichero de configuración que se debe de encontrar en 
