@@ -8,6 +8,10 @@ logging:
   level: debug
   format: "%(asctime)s - [%(levelname)s] - %(processName)s : %(threadName)s - %(funcName)s : %(filename)s : %(lineno)d - %(message)s"
 
+gpio:
+  switch_pin: 10 # Pin físico al que se conecta el switch del timbre, si este valor no está
+                 # se utiliza el pin 10 por defecto
+
 # Si la conf de mqtt_broker no existe, no se lanzan eventos mqtt
 mqtt:
   broker:
