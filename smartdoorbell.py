@@ -23,7 +23,7 @@ class SmartDoorbell:
     DEFAULT_AUDIO_PATH = './data/sounds'
     DEFAULT_AUDIO_VOLUME = 0.5
 
-    DEFAULT_BUTTON_PIN = 10
+    DEFAULT_SWITCH_PIN = 10
 
     def __init__(self, cfg_path: str = 'data/cfg/conf.yaml'):
         self.cfg = {}
@@ -78,10 +78,22 @@ class SmartDoorbell:
             logging.warning(str(e))
 
     def __setup_gpio__(self):
+        switch_pin = self.DEFAULT_SWITCH_PIN
+        if 'gpio' in self.cfg:
+            gpio_cfg = self.cfg['gpio']
+            if 'switch_pin' in gpio_cfg:
+                switch_pin = gpio_cfg['switch_pin']
+            else:
+                logging.warning("No gpio switch_pin in conf file. It's going to use default switch pin = {}"
+                                .format(self.DEFAULT_SWITCH_PIN))
+        else:
+            logging.warning("No gpio section in conf file. It's going to use default switch pin = {}"
+                            .format(self.DEFAULT_SWITCH_PIN))
+
         wiringpi.wiringPiSetupGpio()
-        wiringpi.pinMode(self.DEFAULT_BUTTON_PIN, GPIO.INPUT)
-        wiringpi.pullUpDnControl(self.DEFAULT_BUTTON_PIN, wiringpi.GPIO.PUD_UP)
-        wiringpi.wiringPiISR(self.DEFAULT_BUTTON_PIN, wiringpi.GPIO.INT_EDGE_RISING, self.__button_callback__)
+        wiringpi.pinMode(switch_pin, GPIO.INPUT)
+        wiringpi.pullUpDnControl(switch_pin, wiringpi.GPIO.PUD_UP)
+        wiringpi.wiringPiISR(switch_pin, wiringpi.GPIO.INT_EDGE_RISING, self.__button_callback__)
 
     def __setup_audio__(self):
         if 'audio' in self.cfg:
