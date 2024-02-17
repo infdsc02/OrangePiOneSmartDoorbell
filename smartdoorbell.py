@@ -6,9 +6,9 @@ import sys
 import yaml
 from wiringpi import GPIO
 
-from mqtt.mqttclient import MqttClient, MqttLoopType
-from mqtt.mqttconf import MqttConf
-from mqtt.mqttexceptions import NoMqttConfSection, NoMqttHostSection
+from network.mqtt.mqttclient import MqttClient, MqttLoopType
+from network.mqtt.mqttconf import MqttConf
+from network.mqtt.mqttexceptions import NoMqttConfSection, NoMqttHostSection
 from soundplayer.soundplayer import SoundPlayer
 
 
@@ -30,12 +30,6 @@ class SmartDoorbell:
         self.mqtt_client = None
         with open(cfg_path) as cfg_file:
             self.cfg = yaml.safe_load(cfg_file)
-
-        self.mqtt_conf = MqttConf.create_from_dict(self.cfg)
-
-        self.audio_path =  self.DEFAULT_AUDIO_PATH
-        self.audio_volume = self.DEFAULT_AUDIO_VOLUME
-        self.sound_player = SoundPlayer()
 
         self.__setup_logger__()
         self.__setup_mqtt_client__()
@@ -73,6 +67,7 @@ class SmartDoorbell:
 
     def __setup_mqtt_client__(self):
         try:
+            self.mqtt_conf = MqttConf.create_from_dict(self.cfg)
             self.mqtt_client = MqttClient(broker_url=self.mqtt_conf.url, loop_type=MqttLoopType.NO_LOOP)
         except NoMqttConfSection | NoMqttHostSection as e:
             logging.warning(str(e))
@@ -96,8 +91,12 @@ class SmartDoorbell:
         wiringpi.wiringPiISR(switch_pin, wiringpi.GPIO.INT_EDGE_RISING, self.__button_callback__)
 
     def __setup_audio__(self):
+        self.sound_player = SoundPlayer()
+        self.audio_path = self.DEFAULT_AUDIO_PATH
+        self.audio_volume = self.DEFAULT_AUDIO_VOLUME
+
         if 'audio' in self.cfg:
-            audio_cfg = self.cfg
+            audio_cfg = self.cfg['audio']
             if 'path' in audio_cfg:
                 self.audio_path = audio_cfg['path']
             else:
@@ -116,7 +115,8 @@ class SmartDoorbell:
     def __button_callback__(self):
         logging.debug("Button pressed!")
         self.sound_player.play_sound(self.audio_path)
-        self.mqtt_client.publish(topic=self.mqtt_conf.topic, payload=str(datetime.now()))
+        if self.mqtt_client is not None:
+            self.mqtt_client.publish(topic=self.mqtt_conf.topic, payload=str(datetime.now()))
         wiringpi.delay(200)
 
     def init_context(self):

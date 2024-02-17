@@ -32,6 +32,15 @@ class SoundPlayer:
         else:
             logging.error("SoundPlayer is not initialized. You must call init_context function.")
 
+    def is_playing(self):
+        return self.channel_a is not None and self.channel_a.get_busy()
+
+    def stop_playing(self):
+        if self.channel_a is not None and self.channel_a.get_busy():
+            logging.debug("Channel is busy, stopping current sound.")
+            self.channel_a.stop()
+            mixer.stop()
+
     def set_volume(self, volume):
         if volume < 0 or volume > 1:
             logging.error("Volume value must be between 0 an 1.")
@@ -41,10 +50,7 @@ class SoundPlayer:
 
     def __play_sound__(self, sound_path):
         with self.lock:
-            if self.channel_a is not None and self.channel_a.get_busy():
-                logging.debug("Channel is busy, stopping current sound.")
-                self.channel_a.stop()
-                mixer.stop()
+            self.stop_playing()
             path = Path(sound_path)
             if path.is_dir():
                 sound_path = get_random_file(walk_dir=str(path), file_ext_filter=['.wav', '.mp3'])

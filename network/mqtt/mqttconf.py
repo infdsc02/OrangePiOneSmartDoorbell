@@ -1,8 +1,7 @@
 import logging
-from dataclasses import dataclass
 
-from mqtt.mqttexceptions import NoMqttHostSection, NoMqttConfSection
-from mqtt.mqtttopic import MqttTopic
+from network.mqtt.mqttexceptions import NoMqttHostSection, NoMqttConfSection
+from network.mqtt.mqtttopic import MqttTopic
 from network.url import BasicAuthURL
 
 

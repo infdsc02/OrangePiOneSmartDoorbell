@@ -8,8 +8,8 @@ from typing import List, Any, Dict, Callable
 from paho.mqtt import client as mqtt_client
 from paho.mqtt.client import MQTTv311
 
-from mqtt.mqttresponsecode import MqttResponseCode
-from mqtt.mqtttopic import MqttTopic
+from network.mqtt.mqttresponsecode import MqttResponseCode
+from network.mqtt.mqtttopic import MqttTopic
 from network.url import BasicAuthURL
 from utils.stringutils import is_empty_string
 
