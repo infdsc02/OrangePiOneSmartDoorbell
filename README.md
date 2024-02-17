@@ -4,7 +4,7 @@ el sonido que se especifique en la configuración y, en caso de tener un Broker 
 publica en un topic la fecha y hora a la que se ha producido la llamada.
 
 El switch del timbre debe de ser conectado a utilizando una resistencia de pull-up (en mi caso utilicé una resistencia de 
-10k) como se muestra en el siguiente esquema:
+10k) y un condensador cerámico de 100nF, para evitar la activación del pin por interferencias eléctricas, como se muestra en el siguiente esquema:
 
 ![Esquema electrico](https://github.com/infdsc02/OrangePiOneSmartDoorbell/blob/master/electronic_eschema/Esquema_Fritzing_bb.png?raw=true)
 
